@@ -25,7 +25,7 @@ def start_message(message):
 
 
 @bot.message_handler(content_types=['text'])
-def send_text(message):
+def send_text(message: types.Message):
     global freeid
     # Тут с маленькой буквы потому что lower
     #                            |
@@ -42,6 +42,9 @@ def send_text(message):
                 keyboard.row('Закончить общение')
                 bot.send_message(message.chat.id, 'Найдено!', reply_markup=keyboard)
                 bot.send_message(freeid, 'Найдено!', reply_markup=keyboard)
+
+                bot.send_message(message.chat.id, f'Ваш собеседник: {bot.get_chat(freeid).first_name + bot.get_chat(freeid).last_name}', reply_markup=keyboard)
+                bot.send_message(freeid, f'Ваш собеседник: {message.from_user.full_name}', reply_markup=keyboard)
 
                 users[freeid] = message.chat.id
                 users[message.chat.id] = freeid
