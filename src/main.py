@@ -20,7 +20,8 @@ users = {}
 @bot.message_handler(commands=['start'])
 def start_message(message):
     keyboard = telebot.types.ReplyKeyboardMarkup(True)
-    keyboard.row('Искать')
+    keyboard.row('Со скольки лет?', 'Сколько стоит?', 'Где вы находитесь?')
+    keyboard.row('Связь с поддержкой')
     bot.send_message(message.chat.id, 'Привет!', reply_markup=keyboard)
 
 
@@ -30,27 +31,24 @@ def send_text(message: types.Message):
     # Тут с маленькой буквы потому что lower
     #                            |
     #                            |
-    if message.text.lower() == 'искать':
+    if message.text.lower() == 'cвязь с поддержкой':
 
         if message.chat.id not in users:
             bot.send_message(message.chat.id, 'Ищю...')
 
-            if freeid is None:
-                freeid = message.chat.id
-            else:
-                keyboard = telebot.types.ReplyKeyboardMarkup(True)
-                keyboard.row('Закончить общение')
-                bot.send_message(message.chat.id, 'Найдено!', reply_markup=keyboard)
-                bot.send_message(freeid, 'Найдено!', reply_markup=keyboard)
+            keyboard = telebot.types.ReplyKeyboardMarkup(True)
+            keyboard.row('Закончить общение')
+            bot.send_message(message.chat.id, 'Найдено!', reply_markup=keyboard)
+            bot.send_message(freeid, 'Найдено!', reply_markup=keyboard)
 
-                bot.send_message(message.chat.id, f'Ваш собеседник: {bot.get_chat(freeid).first_name + bot.get_chat(freeid).last_name}', reply_markup=keyboard)
-                bot.send_message(freeid, f'Ваш собеседник: {message.from_user.full_name}', reply_markup=keyboard)
+            bot.send_message(message.chat.id,
+                             f'С вами будет общатся: {bot.get_chat(freeid).first_name + bot.get_chat(freeid).last_name}',
+                             reply_markup=keyboard)
+            bot.send_message(freeid, f'Ваш собеседник: {message.from_user.full_name}', reply_markup=keyboard)
 
-                users[freeid] = message.chat.id
-                users[message.chat.id] = freeid
-                freeid = None
-
-            print(users, freeid)
+            users[freeid] = message.chat.id
+            users[message.chat.id] = freeid
+            freeid = None
         else:
             bot.send_message(message.chat.id, 'Не найдено.')
     elif message.text.lower() == 'закончить общение':
@@ -69,6 +67,14 @@ def send_text(message: types.Message):
             print(users, freeid)
         else:
             bot.send_message(message.chat.id, 'Вы не в поиске!')
+    elif message.text.lower() == 'со скольки лет?':
+        bot.send_message(message.chat.id,
+                         'Мы обучаем детей с 6 до 17 лет! Группы подобраны по знаниям и возрасту учащихся.')
+    elif message.text.lower() == 'сколько стоит?':
+        bot.send_message(message.chat.id, 'Обучение стоит 3000 рублей в месяц.')
+    if message.text.lower() == 'где вы находитесь?':
+        bot.send_message(message.chat.id,
+                         'Мы находимся по адресу: Ростовская область. г.Новочеркасск. ул.Московская 20')
 
 
 @bot.message_handler(
